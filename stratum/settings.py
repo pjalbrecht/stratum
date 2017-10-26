@@ -24,7 +24,13 @@ def setup():
     except ImportError:
         # Custom config not presented, but we can still use defaults
         config = None
-            
+
+    import os
+    config2 =  os.environ.get('CONFIG2')
+
+    if config2 is not None:
+        config2 = __import__(config2)
+
     import sys
     module = sys.modules[__name__]
     
@@ -32,8 +38,15 @@ def setup():
         module.__dict__[name] = value
 
     changes = {}
+
     if config:
         for name,value in read_values(config):
+            if value != module.__dict__.get(name, None):
+                changes[name] = value
+            module.__dict__[name] = value
+
+    if config2:
+        for name,value in read_values(config2):
             if value != module.__dict__.get(name, None):
                 changes[name] = value
             module.__dict__[name] = value
