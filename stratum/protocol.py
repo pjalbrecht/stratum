@@ -97,6 +97,7 @@ class Protocol(LineOnlyReceiver):
  
         stats.PeerStats.client_disconnected(self._get_ip())
         connection_registry.ConnectionRegistry.remove_connection(self)
+        log.debug("Disconnected %s" % self.transport.getPeer().host)
         self.transport = None # Fixes memory leak (cyclic reference)
  
     def writeJsonRequest(self, method, params, is_notification=False):
